@@ -1,4 +1,8 @@
 {
-  "name": "chat-app",
-  "packageManager": "yarn@4.3.1"
+  "name": "@chat-app/chat-app",
+  "packageManager": "yarn@4.3.1",
+  "workspaces": [
+    "packages/server",
+    "packages/client"
+  ]
 }
