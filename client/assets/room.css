@@ -3,6 +3,7 @@
   width: 100vw;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .room__header {
@@ -49,4 +50,26 @@
   width: 95%;
   margin-bottom: 1rem;
   padding: 0.5rem;
+}
+
+.connect-modal {
+  z-index: 999;
+  position: absolute;
+  height: 200px;
+  width: 300px;
+  border: 1px solid black;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+}
+
+.background-filter {
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.288);
 }
