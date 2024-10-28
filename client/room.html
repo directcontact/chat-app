@@ -13,7 +13,18 @@
       <section class="room__container">
         <div class="room__container-users"></div>
         <div class="room__container-chat">
-          <textarea class="room__container-chat__input"></textarea>
+          <div class="room_container-chat--input">
+            <textarea
+              class="room__container-chat--input__area"
+              disabled
+            ></textarea>
+            <button
+              class="room__container-chat--input__button"
+              onclick="handleSend()"
+            >
+              Send
+            </button>
+          </div>
         </div>
       </section>
     </main>

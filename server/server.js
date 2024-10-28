@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as http from "node:http";
 import * as path from "node:path";
-import { WebSocketServer } from "ws";
+import { WebSocket, WebSocketServer } from "ws";
 
 const HOST = "localhost";
 const PORT = 3000;
@@ -47,12 +47,13 @@ const prepareFile = async (url) => {
 const wss = new WebSocketServer({ port: WS_PORT });
 
 wss.on("connection", (ws) => {
-  ws.send("Welcome to the WebSocket server!");
-  console.log("new connection!");
-});
-
-wss.on("message", (message) => {
-  console.log(message);
+  ws.on("message", (data, isBinary) => {
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(data.toString(), { isBinary });
+      }
+    });
+  });
 });
 
 http

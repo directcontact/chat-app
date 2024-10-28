@@ -44,12 +44,21 @@
   align-items: flex-end;
 }
 
-.room__container-chat__input {
+.room_container-chat--input {
+  width: 95%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  margin-bottom: 1rem;
+}
+
+.room__container-chat--input__area {
   border: 1px solid black;
   border-radius: 0.3rem;
   width: 95%;
-  margin-bottom: 1rem;
   padding: 0.5rem;
+  margin-right: 1rem;
 }
 
 .background-filter {

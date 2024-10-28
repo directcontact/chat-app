@@ -1,48 +1,66 @@
 const connecting = false;
+let ws = null;
+let user = null;
+
+const CONNECTION_EVENT = "CONNECTION_EVENT";
+const MESSAGE_EVENT = "MESSAGE_EVENT";
 
 // setup for page
 (function () {
   const username = localStorage.getItem("username");
 
   if (username) {
+    user = username;
     document.querySelector(".connect-modal").remove();
     document.querySelector(".background-filter").remove();
-    const ws = new WebSocket("ws://localhost:3001", "http");
-    ws.onopen = () => {
-      console.log("ws opened on browser");
-    };
-    ws.onmessage = (message) => {
-      console.log(`message received`, message.data);
-    };
-  }
-})(async function () {
-  // const ws = await connectToWss();
-  // ws.send("Test");
-  // ws.onerror = (e) => {
-  //   console.log(e);
-  // };
-  // ws.onopen = () => {
-  //   console.log("ws opened on browser");
-  // };
-  // ws.onmessage = (message) => {
-  //   console.log(`message received`, message.data);
-  // };
-});
+    ws = new WebSocket("ws://localhost:3001", "http");
 
-async function connectToWss() {
-  const ws = new WebSocket("ws://localhost:3001", "http");
+    ws.addEventListener("message", (event) => {
+      // Handle different types of events
+      // Connection events
+      // TODO: handle users connecting into the room
+      // message events
+      // TODO: handle users sending messages
+      console.log("message from server: ", event.data);
+    });
 
-  return new Promise((resolve, reject) => {
-    connecting = true;
-    const timer = setInterval(() => {
-      if (ws.readyState === 1) {
-        clearInterval(timer);
-        resolve(ws);
-        connecting = false;
+    new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (ws.readyState === 1) {
+          resolve(ws);
+        }
+      }, 1000);
+    }).then((ws) => {
+      if (ws.readyState) {
+        // set up events for handling elements on the page
+        const textarea = document.querySelector(
+          ".room__container-chat--input__area"
+        );
+        textarea.removeAttribute("disabled");
+        textarea.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            // TODO: don't let users send empty messages
+            ws.send(JSON.stringify({ username: user, text: e.target.value }));
+          }
+        });
       }
-    }, 10);
-  });
+    });
+  }
+})();
+
+function handleEnter() {
+  if (ws.readyState) {
+    ws.send(
+      JSON.stringify({
+        username: user,
+        text: document.querySelector(".room__container-chat--input__area")
+          .target.value,
+      })
+    );
+  }
 }
+
+function handleSend() {}
 
 function handleConnect() {
   const username = document.querySelector(".connect-modal__name");
