@@ -19,14 +19,21 @@ const MIME_TYPES = {
   svg: "image/svg+xml",
 };
 
-const STATIC_PATH = path.join(process.cwd(), "../client");
+const STATIC_PATH = path.join(process.cwd(), "./client");
 
 const toBool = [() => true, () => false];
 
 const prepareFile = async (url) => {
-  console.log(url);
+  if (!url.includes(".") && !url.endsWith("/")) {
+    url += ".html";
+  }
+
   const paths = [STATIC_PATH, url];
-  if (url.endsWith("/")) paths.push("/index.html");
+
+  if (url.endsWith("/")) {
+    paths.push("/index.html");
+  }
+
   const filePath = path.join(...paths);
   const pathTraversal = !filePath.startsWith(STATIC_PATH);
   const exists = await fs.promises.access(filePath).then(...toBool);
@@ -45,7 +52,7 @@ wss.on("connection", (ws) => {
 });
 
 wss.on("message", (message) => {
-  console.log("new message!");
+  console.log(message);
 });
 
 http

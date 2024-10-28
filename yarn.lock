@@ -8,12 +8,6 @@ __metadata:
 "@chat-app/chat-app@workspace:.":
   version: 0.0.0-use.local
   resolution: "@chat-app/chat-app@workspace:."
-  languageName: unknown
-  linkType: soft
-
-"@chat-app/server@workspace:packages/server":
-  version: 0.0.0-use.local
-  resolution: "@chat-app/server@workspace:packages/server"
   dependencies:
     ws: "npm:^8.18.0"
   languageName: unknown

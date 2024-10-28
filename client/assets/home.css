@@ -12,3 +12,15 @@
   align-items: center;
   flex-direction: column;
 }
+
+.home__intro-main {
+  font-size: xx-large;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.home__intro-sub {
+  font-size: large;
+  font-weight: 400;
+  margin-bottom: 3rem;
+}
