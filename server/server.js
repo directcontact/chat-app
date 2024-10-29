@@ -6,7 +6,6 @@ import {
   CONNECTION_EVENT,
   MESSAGE_EVENT,
   INFO_EVENT,
-  CHANGE_EVENT,
 } from "./utils/constants.js";
 
 const PORT = 3000;
