@@ -7,8 +7,6 @@ const CONNECTION_EVENT = 1;
 const MESSAGE_EVENT = 2;
 const INFO_EVENT = 3;
 
-// TODO: set up more robust unique id system per user
-
 // setup for page
 function setup() {
   const username = localStorage.getItem("username");
@@ -27,15 +25,15 @@ function setup() {
       // Connection events
       const data = JSON.parse(event.data);
       if (data.type === CONNECTION_EVENT) {
-        const { username: newUser, connect } = data;
+        const { username: newUser, connect, id } = data;
         const userContainer = document.querySelector(
           ".room__container-users--row"
         );
 
         if (connect) {
-          addUser(newUser);
+          addUser(newUser, id);
         } else {
-          const leavingUserDiv = document.getElementById(newUser);
+          const leavingUserDiv = document.getElementById(id);
           userContainer.removeChild(leavingUserDiv);
         }
       } else if (data.type === MESSAGE_EVENT) {
@@ -51,10 +49,9 @@ function setup() {
           addMessage(username, text);
         }
       } else if (data.type === INFO_EVENT) {
-        const { usernames } = data;
-
-        usernames.forEach((user) => {
-          addUser(user);
+        const { allUsers } = data;
+        allUsers.map((user) => {
+          addUser(user.username, user.id);
         });
       }
       console.log("message from server: ", event.data);
@@ -76,7 +73,10 @@ function setup() {
       );
       textarea.removeAttribute("disabled");
       textarea.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
+        // If they're trying to shift enter, allow this action.
+        if (e.key === "Enter" && e.shiftKey) {
+          // Otherwise,
+        } else if (e.key === "Enter") {
           e.preventDefault();
           if (e.target.value) {
             ws.send(
@@ -118,7 +118,7 @@ function setup() {
 }
 
 //** HELPER FUNCTIONS */
-function addUser(username) {
+function addUser(username, id) {
   const userContainer = document.querySelector(".room__container-users--row");
   const newUserDiv = document.createElement("div");
   // If self, use different class to differentiate.
@@ -127,7 +127,7 @@ function addUser(username) {
   } else {
     newUserDiv.classList.add("room__container-users--row---entry");
   }
-  newUserDiv.setAttribute("id", username);
+  newUserDiv.setAttribute("id", id);
   newUserDiv.innerHTML = svg;
   newUserDiv.appendChild(document.createTextNode(username));
   userContainer.appendChild(newUserDiv);
@@ -136,13 +136,31 @@ function addUser(username) {
 function addMessage(username, message) {
   const messageContainer = document.querySelector(".room__container-chatarea");
   const newMessageDiv = document.createElement("div");
+  newMessageDiv.classList.add("room__container-chat--message");
+
+  const newUsernameDiv = document.createElement("div");
+  newUsernameDiv.classList.add("room__container-chat--message---username");
+  const newTextDiv = document.createElement("div");
+  newTextDiv.classList.add("room__container-chat--message---text");
+
   // If self, use different class to differentiate.
   if (username === self) {
+    newTextDiv.classList.add("room__container-chat--message---text----self");
     newMessageDiv.classList.add("room__container-chat--message---self");
-  } else {
-    newMessageDiv.classList.add("room__container-chat--message");
   }
-  newMessageDiv.appendChild(document.createTextNode(`${username}: ${message}`));
+
+  // If there are newlines, break by the newlines
+  const splitMsgs = message.split("\n");
+  const newBrokenMsgs = splitMsgs.join("<br />");
+
+  // Use innerHTML to allow for the linebreaks to show.
+  newTextDiv.innerHTML = `${newBrokenMsgs}`;
+
+  newUsernameDiv.appendChild(document.createTextNode(username));
+
+  newMessageDiv.appendChild(newUsernameDiv);
+  newMessageDiv.appendChild(newTextDiv);
+
   messageContainer.appendChild(newMessageDiv);
 }
 

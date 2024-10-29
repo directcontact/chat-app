@@ -65,10 +65,12 @@ wss.on("connection", (ws) => {
   ws.id = wss.getUniqueID();
 
   // When we open the websocket client, we should send all connected users.
-  const usernames = Array.from(users.values());
   ws.send(
     JSON.stringify({
-      usernames,
+      allUsers: Array.from(users.entries(), (entry) => ({
+        id: entry[0],
+        username: entry[1],
+      })),
       type: INFO_EVENT,
     })
   );
@@ -80,6 +82,7 @@ wss.on("connection", (ws) => {
           JSON.stringify({
             username: users.get(ws.id),
             connect: false,
+            id: ws.id,
             type: CONNECTION_EVENT,
           })
         );
@@ -94,13 +97,20 @@ wss.on("connection", (ws) => {
     const messageJson = JSON.parse(message);
     if (messageJson.type === CONNECTION_EVENT && messageJson.connect) {
       users.set(ws.id, messageJson.username);
+      const jsonData = JSON.parse(data);
+      jsonData["id"] = ws.id;
+      wss.clients.forEach(function each(client) {
+        if (client !== ws && client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(jsonData), { isBinary });
+        }
+      });
+    } else {
+      wss.clients.forEach(function each(client) {
+        if (client !== ws && client.readyState === WebSocket.OPEN) {
+          client.send(data.toString(), { isBinary });
+        }
+      });
     }
-
-    wss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(data.toString(), { isBinary });
-      }
-    });
   });
 });
 

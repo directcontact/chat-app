@@ -22,5 +22,31 @@
 .home__intro-sub {
   font-size: large;
   font-weight: 400;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
+}
+
+.home__intro-instructions {
+  margin-bottom: 1rem;
+}
+
+.home__intro-btn {
+  font-family: Roboto;
+  background-color: #147efb;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 1rem 0.75rem;
+  color: white;
+  box-shadow: 1.4px 2.7px 2.7px hsl(0deg 0% 0% / 0.46);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.home__intro-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 3.2px 6.4px 6.4px hsl(0deg 0% 0% / 0.4);
+}
+
+.home__intro-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0.8px 1.6px 1.6px hsl(0deg 0% 0% / 0.48);
 }

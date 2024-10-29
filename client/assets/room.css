@@ -107,6 +107,16 @@
 
 .room__container-chat--message {
   width: fit-content;
+}
+
+.room__container-chat--message---username {
+  font-size: small;
+  color: rgb(156, 156, 156);
+  margin-bottom: 0.3rem;
+}
+
+.room__container-chat--message---text {
+  width: fit-content;
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -115,10 +125,13 @@
 }
 
 .room__container-chat--message---self {
+  margin-left: auto;
+}
+
+.room__container-chat--message---text----self {
   width: fit-content;
   border-radius: 0.5rem;
   padding: 1rem;
-  margin-left: auto;
   margin-bottom: 1rem;
   background-color: #147efb;
   color: white;
