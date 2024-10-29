@@ -3,6 +3,7 @@ import svg from "./icons/user.js";
 // Some global variables holding state
 let ws = null;
 let self = null;
+let selfId = null;
 let roomName = null;
 let roomId = null;
 
@@ -64,10 +65,10 @@ function setupWS() {
         }
         // Message events
       } else if (data.type === MESSAGE_EVENT) {
-        const { username, text } = data;
+        const { username, text, id } = data;
         // There are two types of messaging events, typing message event or just a message
         if (data.typing !== undefined) {
-          const typingUserDiv = document.getElementById(username);
+          const typingUserDiv = document.getElementById(id);
           if (data.typing) {
             typingUserDiv.classList.add("typing");
           } else {
@@ -128,7 +129,7 @@ function setupWS() {
         if (!e.target.value) {
           ws.send(
             JSON.stringify({
-              username: self,
+              id: selfId,
               text: "",
               type: MESSAGE_EVENT,
               typing: false,
@@ -137,7 +138,7 @@ function setupWS() {
         } else {
           ws.send(
             JSON.stringify({
-              username: self,
+              id: selfId,
               text: "",
               type: MESSAGE_EVENT,
               typing: true,
@@ -157,6 +158,7 @@ function addUser(username, id) {
   // If self, use different class to differentiate.
   if (username === self) {
     newUserDiv.classList.add("room__container-users--row---entry----self");
+    selfId = id;
   } else {
     newUserDiv.classList.add("room__container-users--row---entry");
   }
