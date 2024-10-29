@@ -224,7 +224,7 @@ function handleConnect() {
     error.classList.add("connect-modal__error-inactive");
     localStorage.setItem("username", username.value);
 
-    setup();
+    setupWS();
   } else {
     const error = document.querySelector(".connect-modal__error");
     error.classList.add("connect-modal__error-active");
