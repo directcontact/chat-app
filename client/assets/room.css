@@ -32,12 +32,15 @@
   width: 15%;
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  overflow-y: scroll;
 }
 
 .room__container-users--user {
-  
+  width: 90%;
+  margin: 1rem;
 }
 
 .room__container-chat {
@@ -48,24 +51,38 @@
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: flex-start;
+  overflow-y: scroll;
+  flex-direction: column;
+}
+
+.room__container-chatarea {
+  margin: 1rem;
 }
 
 .room_container-chat--input {
-  width: 95%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  margin-bottom: 1rem;
+  position: relative;
+  margin-top: auto;
 }
 
 .room__container-chat--input__area {
   border: 1px solid black;
   border-radius: 0.3rem;
-  width: 95%;
+  width: 100%;
+  height: 3rem;
   padding: 0.5rem;
-  margin-right: 1rem;
+}
+
+.room__container-chat--input__button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  cursor: pointer;
 }
 
 .background-filter {
