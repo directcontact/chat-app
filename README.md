@@ -1,6 +1,6 @@
 # chat-app
 
-Simple chatapp with multi-room functionality and multi-user support.
+Simple chatapp using Node.js, vanilla javascript, html/css and the ws npm library with multi-room functionality and multi-user support.
 
 ## Setup
 
