@@ -9,7 +9,7 @@
     />
     <link rel="stylesheet" href="assets/main.css" />
     <link rel="stylesheet" href="assets/home.css" />
-    <script src="scripts/home.js" async></script>
+    <script type="module" src="scripts/home.js" async></script>
   </head>
   <body>
     <main class="home">
@@ -19,13 +19,28 @@
         <h3 class="home__intro-sub">
           This app is for people who are chatty and need a release...
         </h3>
-        <p class="home__intro-instructions">
-          If you are interested in chatting, click the button below!
-        </p>
-        <button class="home__intro-btn" onclick="handleJoinClick()">
-          Join chatroom
+        <p class="home__intro-instructions">Join a chatroom</p>
+        <div class="home__rooms"></div>
+        <p class="home__intro-or">or</p>
+        <button class="home__intro-btn" onclick="toggleNewRoomModal()">
+          create a new chatroom
         </button>
       </section>
     </main>
+    <!-- MODAL AREA -->
+    <div class="background-filter disabled"></div>
+    <div class="new-room-modal disabled">
+      <h3 class="new-room-modal__header">Enter your room name below:</h3>
+      <input class="new-room-modal__name" type="text" />
+      <p class="new-room-modal__error new-room-modal__error-inactive">
+        Please input a valid name!
+      </p>
+      <button
+        class="new-room-modal__connect-btn"
+        onclick="handleCreateNewChatroom()"
+      >
+        Enter
+      </button>
+    </div>
   </body>
 </html>

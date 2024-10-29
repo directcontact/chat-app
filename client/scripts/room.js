@@ -1,8 +1,12 @@
 import svg from "./icons/user.js";
 
+// Some global variables holding state
 let ws = null;
 let self = null;
+let roomName = null;
+let roomId = null;
 
+// Connection enum map
 const CONNECTION_EVENT = 1;
 const MESSAGE_EVENT = 2;
 const INFO_EVENT = 3;
@@ -12,32 +16,35 @@ function setup() {
   const username = localStorage.getItem("username");
 
   if (username) {
+    // Set the local state for username
     self = username;
+    // Remove the modals when username is already set.
     document.querySelector(".connect-modal").remove();
     document.querySelector(".background-filter").remove();
     ws = new WebSocket("ws://localhost:3001", "http");
 
-    // First, lets add ourselves to the list of people in the chatroom:
-    addUser(self);
-
     ws.addEventListener("message", (event) => {
       // Handle different types of events
-      // Connection events
       const data = JSON.parse(event.data);
+      // Connection events
       if (data.type === CONNECTION_EVENT) {
         const { username: newUser, connect, id } = data;
         const userContainer = document.querySelector(
           ".room__container-users--row"
         );
 
+        // If they are connecting, add the user
         if (connect) {
           addUser(newUser, id);
         } else {
+          // Otherwise, remove the user.
           const leavingUserDiv = document.getElementById(id);
           userContainer.removeChild(leavingUserDiv);
         }
+        // Message events
       } else if (data.type === MESSAGE_EVENT) {
         const { username, text } = data;
+        // There are two types of messaging events, typing message event or just a message
         if (data.typing !== undefined) {
           const typingUserDiv = document.getElementById(username);
           if (data.typing) {
@@ -48,8 +55,10 @@ function setup() {
         } else {
           addMessage(username, text);
         }
+        // Info events
       } else if (data.type === INFO_EVENT) {
         const { allUsers } = data;
+        // add all the users that we are aware of.
         allUsers.map((user) => {
           addUser(user.username, user.id);
         });
@@ -64,6 +73,7 @@ function setup() {
           username: self,
           connect: true,
           type: CONNECTION_EVENT,
+          roomId,
         })
       );
 
@@ -92,6 +102,7 @@ function setup() {
         }
       });
 
+      // Handle when a user is typing or not, if the textarea is empty, no longer typing, otherwise, typing
       textarea.addEventListener("keyup", (e) => {
         if (!e.target.value) {
           ws.send(
@@ -115,6 +126,19 @@ function setup() {
       });
     });
   }
+
+  const params = new URLSearchParams(window.location.search);
+
+  for (const [key, value] of params) {
+    if (key === "name") {
+      roomName = value;
+    } else if (key === "id") {
+      roomId = value;
+    }
+  }
+
+  const chatroomNameDiv = document.querySelector(".room__header-text");
+  chatroomNameDiv.appendChild(document.createTextNode(roomName));
 }
 
 //** HELPER FUNCTIONS */
@@ -182,4 +206,10 @@ function handleConnect() {
   }
 }
 
+function handleBackBtn() {
+  window.location = "/";
+}
+
+window.handleConnect = handleConnect;
+window.handleBackBtn = handleBackBtn;
 setup();

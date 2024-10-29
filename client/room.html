@@ -14,11 +14,17 @@
   <body>
     <main class="room">
       <section class="room__header">
-        <h1 class="room__header-text">Chatty Chatroom</h1>
+        <h1 class="room__header-text"></h1>
       </section>
       <section class="room__container">
         <div class="room__container-users">
           <div class="room__container-users--row"></div>
+          <button
+            class="room__container-users--back-btn"
+            onclick="handleBackBtn()"
+          >
+            Go Back
+          </button>
         </div>
         <div class="room__container-chat">
           <div class="room__container-chatarea"></div>
@@ -32,16 +38,18 @@
         </div>
       </section>
     </main>
+
+    <!-- MODAL AREA -->
+    <div class="background-filter"></div>
+    <div class="connect-modal">
+      <h3 class="connect-modal__header">Hello! Please input your name below</h3>
+      <input class="connect-modal__name" type="text" />
+      <p class="connect-modal__error connect-modal__error-inactive">
+        Please input a name!
+      </p>
+      <button class="connect-modal__connect-btn" onclick="handleConnect()">
+        Enter
+      </button>
+    </div>
   </body>
-  <div class="background-filter"></div>
-  <div class="connect-modal">
-    <h3 class="connect-modal__header">Hello! Please input your name below</h3>
-    <input class="connect-modal__name" type="text" />
-    <p class="connect-modal__error connect-modal__error-inactive">
-      Please input a name!
-    </p>
-    <button class="connect-modal__connect-btn" onclick="handleConnect()">
-      Enter
-    </button>
-  </div>
 </html>

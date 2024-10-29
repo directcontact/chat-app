@@ -23,8 +23,23 @@ const MIME_TYPES = {
   svg: "image/svg+xml",
 };
 
+// Path for all of the client-side files
 const STATIC_PATH = path.join(process.cwd(), "./client");
+
+// State for connected websocket clients alongside usernames.
+/**
+ * Users will be state for holding connected websocket clients
+ *  @type {Map<string, string>}
+ */
 const users = new Map();
+
+/**
+ * Rooms will be state for holding chatrooms, the first parameter being
+ * the actual string representation of id of the room, and the second
+ * parameter being the name of the chatroom.
+ * @type {Map<string, string>}
+ */
+const rooms = new Map();
 
 const toBool = [() => true, () => false];
 
@@ -64,23 +79,17 @@ wss.getUniqueID = function () {
 wss.on("connection", (ws) => {
   ws.id = wss.getUniqueID();
 
-  // When we open the websocket client, we should send all connected users.
-  ws.send(
-    JSON.stringify({
-      allUsers: Array.from(users.entries(), (entry) => ({
-        id: entry[0],
-        username: entry[1],
-      })),
-      type: INFO_EVENT,
-    })
-  );
-
   ws.on("close", (data, reason) => {
     wss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
+      // When we close a connection, notify all other clients that this connection is closed.
+      if (
+        client !== ws &&
+        client.readyState === WebSocket.OPEN &&
+        client.roomId === ws.roomId
+      ) {
         client.send(
           JSON.stringify({
-            username: users.get(ws.id),
+            username: ws.username,
             connect: false,
             id: ws.id,
             type: CONNECTION_EVENT,
@@ -88,25 +97,51 @@ wss.on("connection", (ws) => {
         );
       }
     });
-
-    users.delete(ws.id);
   });
 
   ws.on("message", (data, isBinary) => {
     const message = data.toString();
     const messageJson = JSON.parse(message);
+    // If this is a connection type event, and they are connecting, lets append some data like the ws id.
     if (messageJson.type === CONNECTION_EVENT && messageJson.connect) {
-      users.set(ws.id, messageJson.username);
+      ws.username = messageJson.username;
+      ws.roomId = messageJson.roomId;
       const jsonData = JSON.parse(data);
       jsonData["id"] = ws.id;
+
+      // Send information about other clients to currnet client
+      // When we open the websocket client, we should send all connected users.
+      const clientsInCurrentRoom = Array.from(wss.clients).filter(
+        (client) => client.roomId === ws.roomId
+      );
+      ws.send(
+        JSON.stringify({
+          allUsers: clientsInCurrentRoom.map((connectedWS) => ({
+            id: connectedWS.id,
+            username: connectedWS.username,
+          })),
+          type: INFO_EVENT,
+        })
+      );
+
       wss.clients.forEach(function each(client) {
-        if (client !== ws && client.readyState === WebSocket.OPEN) {
+        if (
+          client !== ws &&
+          client.readyState === WebSocket.OPEN &&
+          client.roomId === ws.roomId
+        ) {
           client.send(JSON.stringify(jsonData), { isBinary });
         }
       });
+
+      // Otherwise, lets just broadcast this msg out to the other websocket clients.
     } else {
       wss.clients.forEach(function each(client) {
-        if (client !== ws && client.readyState === WebSocket.OPEN) {
+        if (
+          client !== ws &&
+          client.readyState === WebSocket.OPEN &&
+          client.roomId === ws.roomId
+        ) {
           client.send(data.toString(), { isBinary });
         }
       });
@@ -114,13 +149,54 @@ wss.on("connection", (ws) => {
   });
 });
 
-http
-  .createServer(async (req, res) => {
-    const file = await prepareFile(req.url);
+const server = http.createServer(async (req, res) => {
+  // Only for page reqs, not actual API reqs
+  if (!req.url.includes("/api")) {
+    const file = await prepareFile(req.url.split("?")[0]);
     const statusCode = file.found ? 200 : 404;
     const mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
     res.writeHead(statusCode, { "Content-Type": mimeType });
+
     file.stream.pipe(res);
     console.log(`${req.method} ${req.url} ${statusCode}`);
-  })
-  .listen(PORT);
+  }
+});
+
+server.on("request", (req, res) => {
+  let statusCode;
+  if (req.url === "/api/room" && req.method === "GET") {
+    statusCode = 200;
+    res.writeHead(statusCode, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify(
+        Array.from(rooms.entries(), (entry) => ({
+          id: entry[0],
+          name: entry[1],
+        }))
+      )
+    );
+  } else if (req.url === "/api/room" && req.method === "POST") {
+    statusCode = 200;
+    let jsonString = "";
+    req.on("data", (data) => {
+      jsonString += data;
+    });
+    req.on("end", () => {
+      try {
+        const { id, name } = JSON.parse(jsonString);
+        rooms.set(id, name);
+      } catch (e) {
+        statusCode = 404;
+      }
+    });
+
+    res.writeHead(statusCode);
+    res.end();
+  } else {
+    statusCode = 404;
+  }
+
+  console.log(`${req.method} ${req.url} ${statusCode}`);
+});
+
+server.listen(PORT);

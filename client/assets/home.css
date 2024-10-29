@@ -50,3 +50,82 @@
   transform: translateY(2px);
   box-shadow: 0.8px 1.6px 1.6px hsl(0deg 0% 0% / 0.48);
 }
+
+.home__intro-or {
+  margin-bottom: 1rem;
+}
+
+.home__rooms {
+  border: 1px solid rgb(180, 180, 180);
+  border-radius: 1rem;
+  padding: 1rem;
+  min-width: 20%;
+  min-height: 100px;
+  margin-bottom: 1rem;
+  max-width: 75%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.home__rooms-room {
+  background-color: #147efb;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin: 0.5rem;
+  color: white;
+  cursor: pointer;
+}
+
+.new-room-modal {
+  z-index: 999;
+  position: absolute;
+  height: 200px;
+  width: 300px;
+  border-radius: 0.5rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.new-room-modal__header {
+  font-size: large;
+  font-weight: 700;
+}
+
+.new-room-modal__name {
+  border: 1px solid black;
+  border-radius: 0.3rem;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.5rem;
+}
+
+.new-room-modal__error {
+  margin-top: 0.5rem;
+  color: red;
+}
+
+.new-room-modal__error-inactive {
+  display: none;
+}
+
+.new-room-modal__error-active {
+  display: block;
+}
+
+.new-room-modal__connect-btn {
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.disabled {
+  display: none;
+}

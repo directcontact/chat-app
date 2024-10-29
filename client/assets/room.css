@@ -45,6 +45,18 @@
   padding-right: 1rem;
 }
 
+.room__container-users--back-btn {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 1rem 0.75rem;
+  border: none;
+  background-color: #147efb;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  color: white;
+  font-family: Roboto;
+}
+
 .room__container-users--row---entry----self {
   width: 100%;
   margin-bottom: 1rem;
@@ -162,16 +174,6 @@
   right: 10px;
   color: rgb(156, 156, 156);
   font-size: small;
-}
-
-.background-filter {
-  z-index: 1;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.288);
 }
 
 .connect-modal {
