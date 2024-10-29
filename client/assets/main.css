@@ -129,5 +129,14 @@ table {
 }
 
 html {
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  font-family: Roboto;
+}
+
+*,
+*::before,
+*::after {
+  -webkit-box-sizing: inherit;
+  box-sizing: inherit;
 }

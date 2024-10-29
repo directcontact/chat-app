@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,500;1,700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="assets/main.css" />
     <link rel="stylesheet" href="assets/room.css" />
-    <script src="scripts/room.js" async></script>
+    <script type="module" src="scripts/room.js" async></script>
   </head>
   <body>
     <main class="room">
@@ -11,7 +17,9 @@
         <h1 class="room__header-text">Chatty Chatroom</h1>
       </section>
       <section class="room__container">
-        <div class="room__container-users"></div>
+        <div class="room__container-users">
+          <div class="room__container-users--row"></div>
+        </div>
         <div class="room__container-chat">
           <div class="room__container-chatarea"></div>
           <div class="room_container-chat--input">
@@ -19,12 +27,7 @@
               class="room__container-chat--input__area"
               disabled
             ></textarea>
-            <button
-              class="room__container-chat--input__button"
-              onclick="handleSend()"
-            >
-              Send
-            </button>
+            <p class="room__container-chat--input__info">Press Enter to send</p>
           </div>
         </div>
       </section>
