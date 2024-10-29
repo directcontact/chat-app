@@ -1,0 +1,2 @@
+const CONNECTION_EVENT = 1;
+const MESSAGE_EVENT = 2;

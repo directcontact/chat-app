@@ -2,8 +2,8 @@ import * as fs from "node:fs";
 import * as http from "node:http";
 import * as path from "node:path";
 import { WebSocket, WebSocketServer } from "ws";
+import { CONNECTION_EVENT, MESSAGE_EVENT } from "./utils/constants";
 
-const HOST = "localhost";
 const PORT = 3000;
 const WS_PORT = 3001;
 
@@ -49,7 +49,7 @@ const wss = new WebSocketServer({ port: WS_PORT });
 wss.on("connection", (ws) => {
   ws.on("message", (data, isBinary) => {
     wss.clients.forEach(function each(client) {
-      if (client.readyState === WebSocket.OPEN) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
         client.send(data.toString(), { isBinary });
       }
     });

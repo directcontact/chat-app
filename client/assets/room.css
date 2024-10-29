@@ -31,6 +31,13 @@
   border-radius: 1rem;
   width: 15%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.room__container-users--user {
+  
 }
 
 .room__container-chat {
