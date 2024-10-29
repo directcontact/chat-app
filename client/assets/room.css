@@ -121,6 +121,14 @@
   width: fit-content;
 }
 
+.room__container-chat--message---info {
+  text-align: center;
+  width: 100%;
+  font-size: small;
+  color: rgb(156, 156, 156);
+  margin-bottom: 1rem;
+}
+
 .room__container-chat--message---username {
   font-size: small;
   color: rgb(156, 156, 156);
@@ -209,10 +217,17 @@
 
 .connect-modal__connect-btn {
   margin-top: 1rem;
+  padding: 0.5rem;
+  border: none;
+  background-color: #147efb;
+  border-radius: 0.5rem;
   cursor: pointer;
+  color: white;
+  font-family: Roboto;
 }
 
 .connect-modal__error {
+  margin-top: 0.5rem;
   color: red;
 }
 

@@ -123,7 +123,13 @@
 
 .new-room-modal__connect-btn {
   margin-top: 1rem;
+  padding: 0.5rem;
+  border: none;
+  background-color: #147efb;
+  border-radius: 0.5rem;
   cursor: pointer;
+  color: white;
+  font-family: Roboto;
 }
 
 .disabled {

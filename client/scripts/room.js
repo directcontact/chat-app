@@ -11,8 +11,27 @@ const CONNECTION_EVENT = 1;
 const MESSAGE_EVENT = 2;
 const INFO_EVENT = 3;
 
+const LEAVE_TEXT = " has left the room.";
+const JOIN_TEXT = " has joined the room.";
+
 // setup for page
 function setup() {
+  const params = new URLSearchParams(window.location.search);
+
+  for (const [key, value] of params) {
+    if (key === "name") {
+      roomName = value;
+    } else if (key === "id") {
+      roomId = value;
+    }
+  }
+
+  const chatroomNameDiv = document.querySelector(".room__header-text");
+  chatroomNameDiv.appendChild(document.createTextNode(roomName));
+}
+
+// setup for websocket stuff
+function setupWS() {
   const username = localStorage.getItem("username");
 
   if (username) {
@@ -36,10 +55,12 @@ function setup() {
         // If they are connecting, add the user
         if (connect) {
           addUser(newUser, id);
+          addInfoMessage(newUser, connect);
         } else {
           // Otherwise, remove the user.
           const leavingUserDiv = document.getElementById(id);
           userContainer.removeChild(leavingUserDiv);
+          addInfoMessage(newUser, connect);
         }
         // Message events
       } else if (data.type === MESSAGE_EVENT) {
@@ -126,22 +147,10 @@ function setup() {
       });
     });
   }
-
-  const params = new URLSearchParams(window.location.search);
-
-  for (const [key, value] of params) {
-    if (key === "name") {
-      roomName = value;
-    } else if (key === "id") {
-      roomId = value;
-    }
-  }
-
-  const chatroomNameDiv = document.querySelector(".room__header-text");
-  chatroomNameDiv.appendChild(document.createTextNode(roomName));
 }
 
 //** HELPER FUNCTIONS */
+
 function addUser(username, id) {
   const userContainer = document.querySelector(".room__container-users--row");
   const newUserDiv = document.createElement("div");
@@ -188,6 +197,23 @@ function addMessage(username, message) {
   messageContainer.appendChild(newMessageDiv);
 }
 
+function addInfoMessage(username, connect) {
+  const messageContainer = document.querySelector(".room__container-chatarea");
+  const newInfoMessageDiv = document.createElement("div");
+  newInfoMessageDiv.classList.add("room__container-chat--message---info");
+  if (connect) {
+    newInfoMessageDiv.appendChild(
+      document.createTextNode(username + JOIN_TEXT)
+    );
+    messageContainer.appendChild(newInfoMessageDiv);
+  } else {
+    newInfoMessageDiv.appendChild(
+      document.createTextNode(username + LEAVE_TEXT)
+    );
+    messageContainer.appendChild(newInfoMessageDiv);
+  }
+}
+
 //** DOM EVENT FUNCTIONS */
 
 function handleConnect() {
@@ -212,4 +238,5 @@ function handleBackBtn() {
 
 window.handleConnect = handleConnect;
 window.handleBackBtn = handleBackBtn;
+setupWS();
 setup();

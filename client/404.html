@@ -9,10 +9,22 @@
     />
     <link rel="stylesheet" href="assets/main.css" />
     <link rel="stylesheet" href="assets/404.css" />
+
+    <script>
+      function handleGoBack() {
+        window.location = "/";
+      }
+    </script>
   </head>
   <body>
     <main>
-      <section class="404"></section>
+      <section class="notfound">
+        <h1 class="notfound__header">
+          The page you are looking for is not found, Click below to navigate
+          back to the main page
+        </h1>
+        <button class="notfound__btn" onclick="handleGoBack()">Go Back</button>
+      </section>
     </main>
   </body>
 </html>

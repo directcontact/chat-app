@@ -6,6 +6,7 @@ import {
   CONNECTION_EVENT,
   MESSAGE_EVENT,
   INFO_EVENT,
+  CHANGE_EVENT,
 } from "./utils/constants.js";
 
 const PORT = 3000;
@@ -43,7 +44,9 @@ const rooms = new Map();
 
 const toBool = [() => true, () => false];
 
-const prepareFile = async (url) => {
+const prepareFile = async (rawUrl) => {
+  let [url, params] = rawUrl.split("?");
+
   if (!url.includes(".") && !url.endsWith("/")) {
     url += ".html";
   }
@@ -57,7 +60,14 @@ const prepareFile = async (url) => {
   const filePath = path.join(...paths);
   const pathTraversal = !filePath.startsWith(STATIC_PATH);
   const exists = await fs.promises.access(filePath).then(...toBool);
-  const found = !pathTraversal && exists;
+  let found = !pathTraversal && exists;
+
+  if (params) {
+    const paramParts = params.split("=");
+    const id = paramParts[1].split("&")[0];
+    found = rooms.get(id);
+  }
+
   const streamPath = found ? filePath : STATIC_PATH + "/404.html";
   const ext = path.extname(streamPath).substring(1).toLowerCase();
   const stream = fs.createReadStream(streamPath);
@@ -152,11 +162,10 @@ wss.on("connection", (ws) => {
 const server = http.createServer(async (req, res) => {
   // Only for page reqs, not actual API reqs
   if (!req.url.includes("/api")) {
-    const file = await prepareFile(req.url.split("?")[0]);
+    const file = await prepareFile(req.url);
     const statusCode = file.found ? 200 : 404;
     const mimeType = MIME_TYPES[file.ext] || MIME_TYPES.default;
     res.writeHead(statusCode, { "Content-Type": mimeType });
-
     file.stream.pipe(res);
     console.log(`${req.method} ${req.url} ${statusCode}`);
   }
